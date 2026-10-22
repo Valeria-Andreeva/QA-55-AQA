@@ -1,0 +1,198 @@
+public class Main {
+    public static void main(String[] args) {
+        // ВЫЗОВ ВСЕХ ЗАДАНИЙ
+
+        System.out.println("Задание 1");
+        printThreeWords();
+
+        System.out.println("\nЗадание 2");
+        checkSumSign();
+
+        System.out.println("\nЗадание 3");
+        printColor();
+
+        System.out.println("\nЗадание 4");
+        compareNumbers();
+
+        System.out.println("\nЗадание 5");
+        System.out.println("Результат: " + checkSumRange(5, 10));
+
+        System.out.println("\nЗадание 6");
+        printNumberSign(-5);
+
+        System.out.println("\nЗадание 7");
+        System.out.println("Результат: " + isNegative(-3));
+
+        System.out.println("\nЗадание 8");
+        printStringMultipleTimes("Привет", 3);
+
+        System.out.println("\nЗадание 9");
+        System.out.println("Результат: " + isLeapYear(2024));
+
+        System.out.println("\nЗадание 10");
+        int[] binaryArr = {1, 1, 0, 0, 1, 0, 1, 1, 0, 0};
+        invertBinaryArray(binaryArr);
+        System.out.print("Измененный массив: ");
+        printArray(binaryArr);
+
+        System.out.println("\nЗадание 11");
+        int[] hundredArr = new int[100];
+        fillArraySequentially(hundredArr);
+        System.out.print("Первые 10 элементов: ");
+        for (int i = 0; i < 10; i++) {
+            System.out.print(hundredArr[i] + " ");
+        }
+        System.out.println("...");
+
+        System.out.println("\nЗадание 12");
+        int[] targetArr = {1, 5, 3, 2, 11, 4, 5, 2, 4, 8, 9, 1};
+        multiplyLessThanSix(targetArr);
+        System.out.print("Измененный массив: ");
+        printArray(targetArr);
+
+        System.out.println("\nЗадание 13");
+        int[][] squareMatrix = createSquareMatrix(4);
+        print2DArray(squareMatrix);
+
+        System.out.println("\nЗадание 14");
+        int[] customArr = createArrayWithInitialValue(5, 7);
+        printArray(customArr);
+    }
+
+    // Задание 1
+    public static void printThreeWords() {
+        System.out.println("Orange");
+        System.out.println("Banana");
+        System.out.println("Apple");
+    }
+
+    // Задание 2
+    public static void checkSumSign() {
+        int a = 5;
+        int b = -10;
+        int sum = a + b;
+        if (sum >= 0) {
+            System.out.println("Сумма положительная");
+        } else {
+            System.out.println("Сумма отрицательная");
+        }
+    }
+
+    // Задание 3
+    public static void printColor() {
+        int value = 50;
+        if (value <= 0) {
+            System.out.println("Красный");
+        } else if (value > 0 && value <= 100) {
+            System.out.println("Желтый");
+        } else {
+            System.out.println("Зеленый");
+        }
+    }
+
+    // Задание 4
+    public static void compareNumbers() {
+        int a = 10;
+        int b = 5;
+        if (a >= b) {
+            System.out.println("a >= b");
+        } else {
+            System.out.println("a < b");
+        }
+    }
+
+    // Задание 5
+    public static boolean checkSumRange(int a, int b) {
+        int sum = a + b;
+        return sum >= 10 && sum <= 20;
+    }
+
+    // Задание 6
+    public static void printNumberSign(int number) {
+        if (number >= 0) {
+            System.out.println("Число положительное");
+        } else {
+            System.out.println("Число отрицательное");
+        }
+    }
+
+    // Задание 7
+    public static boolean isNegative(int number) {
+        return number < 0;
+    }
+
+    // Задание 8
+    public static void printStringMultipleTimes(String str, int count) {
+        for (int i = 0; i < count; i++) {
+            System.out.println(str);
+        }
+    }
+
+    // Задание 9
+    public static boolean isLeapYear(int year) {
+        return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+    }
+
+    // Задание 10
+    public static void invertBinaryArray(int[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == 0) {
+                arr[i] = 1;
+            } else {
+                arr[i] = 0;
+            }
+        }
+    }
+
+    // Задание 11
+    public static void fillArraySequentially(int[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = i + 1;
+        }
+    }
+
+    // Задание 12
+    public static void multiplyLessThanSix(int[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] < 6) {
+                arr[i] *= 2;
+            }
+        }
+    }
+
+    // Задание 13
+    public static int[][] createSquareMatrix(int size) {
+        int[][] matrix = new int[size][size];
+        for (int i = 0; i < size; i++) {
+            matrix[i][i] = 1;
+        }
+        return matrix;
+    }
+
+    // Задание 14
+    public static int[] createArrayWithInitialValue(int len, int initialValue) {
+        int[] arr = new int[len];
+        for (int i = 0; i < len; i++) {
+            arr[i] = initialValue;
+        }
+        return arr;
+    }
+
+    // Вспомогательный метод для вывода одномерного массива (для удобства проверки)
+    public static void printArray(int[] arr) {
+        for (int num : arr) {
+            System.out.print(num + " ");
+        }
+        System.out.println();
+    }
+
+    // Вспомогательный метод для вывода двумерного массива (для удобства проверки)
+    public static void print2DArray(int[][] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < arr[i].length; j++) {
+                System.out.print(arr[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+}
