@@ -1,3 +1,9 @@
+
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Step;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,25 +16,21 @@ import pages.MtsPaymentPage;
 
 import java.util.List;
 
+@Epic("MTS Тестирование")
+@Feature("Онлайн пополнение")
 public class MtsPageObjectTest {
 
     private WebDriver driver;
     private MtsPaymentPage paymentPage;
 
-
     @BeforeEach
     public void setUp() {
-
         driver = new ChromeDriver();
-
         paymentPage = new MtsPaymentPage(driver);
-
         paymentPage.openPage();
     }
 
-
-    // Проверка надписей в полях
-
+    @Step("Проверка надписей в незаполненных полях: {paymentType}")
     private void checkPlaceholders(String paymentType) {
 
         System.out.println("\n================================");
@@ -58,9 +60,6 @@ public class MtsPageObjectTest {
         );
     }
 
-
-    // Первое задание
-
     public void testFirstTask() {
 
         System.out.println("\n########################################");
@@ -79,7 +78,7 @@ public class MtsPageObjectTest {
 
         Assertions.assertTrue(
                 paymentPage.isDetailsLinkDisplayed(),
-                "Ссылка Подробнее о сервисе не найдена"
+                "Ссылка не найдена"
         );
 
         Assertions.assertTrue(
@@ -90,22 +89,16 @@ public class MtsPageObjectTest {
         checkPlaceholders("Услуги связи");
 
         paymentPage.selectPaymentType("Домашний интернет");
-
         checkPlaceholders("Домашний интернет");
 
         paymentPage.selectPaymentType("Рассрочка");
-
         checkPlaceholders("Рассрочка");
 
         paymentPage.selectPaymentType("Задолженность");
-
         checkPlaceholders("Задолженность");
 
         System.out.println("\nПЕРВОЕ ЗАДАНИЕ ВЫПОЛНЕНО!");
     }
-
-
-    // Второе задание
 
     public void testSecondTask() {
 
@@ -113,54 +106,30 @@ public class MtsPageObjectTest {
         System.out.println("НАЧАЛО ВТОРОГО ЗАДАНИЯ");
         System.out.println("########################################");
 
-        // Выбираем услуги связи
-
         paymentPage.selectPaymentType("Услуги связи");
-
-        // Вводим тестовый номер
 
         paymentPage.enterPhone("297777777");
 
-        // Вводим сумму
-
         paymentPage.enterAmount("100");
-
-        // Открываем платёжную форму
 
         paymentPage.clickBankCardButton();
 
-        // Проверяем iframe
-
         paymentPage.printFrames();
-
-        // Выводим содержимое платёжной формы
 
         paymentPage.printPaymentFrameContent();
 
+        String amount = paymentPage.getPaymentAmount();
 
-        // Проверяем сумму
-
-        String amount =
-                paymentPage.getPaymentAmount();
-
-        System.out.println(
-                "Отображаемая сумма: " + amount
-        );
+        System.out.println("Отображаемая сумма: " + amount);
 
         Assertions.assertTrue(
                 amount.contains("100.00") && amount.contains("BYN"),
                 "Некорректная сумма оплаты: " + amount
         );
 
+        String information = paymentPage.getPaymentInformation();
 
-        // Проверяем информацию об оплате
-
-        String information =
-                paymentPage.getPaymentInformation();
-
-        System.out.println(
-                "Информация об оплате: " + information
-        );
+        System.out.println("Информация об оплате: " + information);
 
         Assertions.assertTrue(
                 information.contains("Услуги связи"),
@@ -171,9 +140,6 @@ public class MtsPageObjectTest {
                 information.contains("375297777777"),
                 "Неверный номер телефона"
         );
-
-
-        // Проверяем поля банковской карты
 
         List<String> cardFields =
                 paymentPage.getCardPlaceholders();
@@ -201,14 +167,10 @@ public class MtsPageObjectTest {
 
         Assertions.assertTrue(
                 cardFields.contains("Имя и фамилия на карте"),
-                "Не найдено поле Имя и фамилия на карте"
+                "Не найдено поле Имя"
         );
 
-
-        // Проверяем логотипы платёжных систем
-
-        List<String> logos =
-                paymentPage.getPaymentLogos();
+        List<String> logos = paymentPage.getPaymentLogos();
 
         System.out.println("\nНайденные платёжные логотипы:");
 
@@ -224,19 +186,14 @@ public class MtsPageObjectTest {
         System.out.println("\nВТОРОЕ ЗАДАНИЕ ВЫПОЛНЕНО!");
     }
 
-
-    // Запуск обоих заданий
-
     @Test
+    @Description("Проверка заголовка, логотипа, ссылки, плейсхолдеров и платёжной формы")
     public void testAllTasks() {
 
         testFirstTask();
 
         testSecondTask();
     }
-
-
-    // Закрытие браузера
 
     @AfterEach
     public void tearDown() {
@@ -245,5 +202,4 @@ public class MtsPageObjectTest {
             driver.quit();
         }
     }
-
 }
