@@ -15,7 +15,6 @@ public class MtsPageObjectTest {
     private WebDriver driver;
     private MtsPaymentPage paymentPage;
 
-
     @BeforeEach
     public void setUp() {
 
@@ -26,9 +25,7 @@ public class MtsPageObjectTest {
         paymentPage.openPage();
     }
 
-
     // Проверка надписей в полях
-
     private void checkPlaceholders(String paymentType) {
 
         System.out.println("\n================================");
@@ -58,9 +55,7 @@ public class MtsPageObjectTest {
         );
     }
 
-
     // Первое задание
-
     public void testFirstTask() {
 
         System.out.println("\n########################################");
@@ -90,23 +85,18 @@ public class MtsPageObjectTest {
         checkPlaceholders("Услуги связи");
 
         paymentPage.selectPaymentType("Домашний интернет");
-
         checkPlaceholders("Домашний интернет");
 
         paymentPage.selectPaymentType("Рассрочка");
-
         checkPlaceholders("Рассрочка");
 
         paymentPage.selectPaymentType("Задолженность");
-
         checkPlaceholders("Задолженность");
 
         System.out.println("\nПЕРВОЕ ЗАДАНИЕ ВЫПОЛНЕНО!");
     }
 
-
     // Второе задание
-
     public void testSecondTask() {
 
         System.out.println("\n########################################");
@@ -114,53 +104,37 @@ public class MtsPageObjectTest {
         System.out.println("########################################");
 
         // Выбираем услуги связи
-
         paymentPage.selectPaymentType("Услуги связи");
 
         // Вводим тестовый номер
-
         paymentPage.enterPhone("297777777");
 
         // Вводим сумму
-
         paymentPage.enterAmount("100");
 
         // Открываем платёжную форму
-
         paymentPage.clickBankCardButton();
 
         // Проверяем iframe
-
         paymentPage.printFrames();
 
         // Выводим содержимое платёжной формы
-
         paymentPage.printPaymentFrameContent();
 
-
         // Проверяем сумму
+        String amount = paymentPage.getPaymentAmount();
 
-        String amount =
-                paymentPage.getPaymentAmount();
-
-        System.out.println(
-                "Отображаемая сумма: " + amount
-        );
+        System.out.println("Отображаемая сумма: " + amount);
 
         Assertions.assertTrue(
                 amount.contains("100.00") && amount.contains("BYN"),
                 "Некорректная сумма оплаты: " + amount
         );
 
-
         // Проверяем информацию об оплате
+        String information = paymentPage.getPaymentInformation();
 
-        String information =
-                paymentPage.getPaymentInformation();
-
-        System.out.println(
-                "Информация об оплате: " + information
-        );
+        System.out.println("Информация об оплате: " + information);
 
         Assertions.assertTrue(
                 information.contains("Услуги связи"),
@@ -172,11 +146,8 @@ public class MtsPageObjectTest {
                 "Неверный номер телефона"
         );
 
-
         // Проверяем поля банковской карты
-
-        List<String> cardFields =
-                paymentPage.getCardPlaceholders();
+        List<String> cardFields = paymentPage.getCardPlaceholders();
 
         System.out.println("\nПоля банковской карты:");
 
@@ -204,11 +175,8 @@ public class MtsPageObjectTest {
                 "Не найдено поле Имя и фамилия на карте"
         );
 
-
         // Проверяем логотипы платёжных систем
-
-        List<String> logos =
-                paymentPage.getPaymentLogos();
+        List<String> logos = paymentPage.getPaymentLogos();
 
         System.out.println("\nНайденные платёжные логотипы:");
 
@@ -221,12 +189,16 @@ public class MtsPageObjectTest {
                 "Не найдены логотипы платёжных систем"
         );
 
+        // Закрываем платёжную панель
+        paymentPage.closePaymentFrame();
+
+        // Нажимаем кнопку КРОК
+        paymentPage.clickKrokButton();
+
         System.out.println("\nВТОРОЕ ЗАДАНИЕ ВЫПОЛНЕНО!");
     }
 
-
     // Запуск обоих заданий
-
     @Test
     public void testAllTasks() {
 
@@ -235,9 +207,7 @@ public class MtsPageObjectTest {
         testSecondTask();
     }
 
-
     // Закрытие браузера
-
     @AfterEach
     public void tearDown() {
 
@@ -245,5 +215,4 @@ public class MtsPageObjectTest {
             driver.quit();
         }
     }
-
 }

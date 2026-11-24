@@ -1,3 +1,4 @@
+
 package pages;
 
 import org.openqa.selenium.By;
@@ -17,7 +18,6 @@ public class MtsPaymentPage {
     private final WebDriverWait wait;
 
     // Локаторы страницы MTS
-
     private final By blockTitle =
             By.xpath("//div[contains(@class,'pay__wrapper')]//h2");
 
@@ -33,18 +33,16 @@ public class MtsPaymentPage {
     private final By inputFields =
             By.cssSelector(".pay__wrapper input");
 
-    // Локатор iframe bePaid
-
+    // Локатор платёжного iframe
     private final By paymentFrame =
-            By.cssSelector("iframe[src*='checkout.bepaid.by']");
-
+            By.cssSelector("iframe.payment-widget-iframe");
 
     public MtsPaymentPage(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(25));
     }
 
-
+    // Пауза
     private void pause(int seconds) {
         try {
             Thread.sleep(seconds * 1000L);
@@ -54,14 +52,31 @@ public class MtsPaymentPage {
         }
     }
 
-
-    // Открытие страницы
-
+    // Открытие страницы и принятие Cookie
     public void openPage() {
 
         driver.get("https://www.mts.by/");
         driver.manage().window().maximize();
 
+        // Принятие Cookie
+        try {
+            WebElement acceptCookies = wait.until(
+                    ExpectedConditions.elementToBeClickable(
+                            By.xpath("//button[contains(., 'Принять')]")
+                    )
+            );
+
+            acceptCookies.click();
+
+            System.out.println("Cookie приняты.");
+
+        } catch (Exception e) {
+            System.out.println("Окно cookie не появилось или уже закрыто.");
+        }
+
+        pause(2);
+
+        // Прокрутка к блоку оплаты
         WebElement header = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(selectHeader)
         );
@@ -74,9 +89,7 @@ public class MtsPaymentPage {
         pause(2);
     }
 
-
     // Проверка заголовка
-
     public boolean isBlockTitleDisplayed() {
 
         return wait.until(
@@ -84,9 +97,7 @@ public class MtsPaymentPage {
         ).isDisplayed();
     }
 
-
     // Проверка логотипа Visa
-
     public boolean isVisaLogoDisplayed() {
 
         return wait.until(
@@ -94,9 +105,7 @@ public class MtsPaymentPage {
         ).isDisplayed();
     }
 
-
     // Проверка ссылки
-
     public boolean isDetailsLinkDisplayed() {
 
         return wait.until(
@@ -104,9 +113,7 @@ public class MtsPaymentPage {
         ).isDisplayed();
     }
 
-
     // Получение выбранного типа платежа
-
     public String getSelectedPaymentType() {
 
         return wait.until(
@@ -114,9 +121,7 @@ public class MtsPaymentPage {
         ).getText().trim();
     }
 
-
     // Выбор типа платежа
-
     public void selectPaymentType(String typeName) {
 
         WebElement header = wait.until(
@@ -144,9 +149,7 @@ public class MtsPaymentPage {
         System.out.println("Выбран вариант: " + typeName);
     }
 
-
     // Получение надписей в незаполненных полях
-
     public List<String> getEmptyFieldsPlaceholders() {
 
         List<String> placeholders = new ArrayList<>();
@@ -159,8 +162,7 @@ public class MtsPaymentPage {
 
                 if (value == null || value.trim().isEmpty()) {
 
-                    String placeholder =
-                            input.getAttribute("placeholder");
+                    String placeholder = input.getAttribute("placeholder");
 
                     if (placeholder != null &&
                             !placeholder.trim().isEmpty()) {
@@ -174,9 +176,7 @@ public class MtsPaymentPage {
         return placeholders;
     }
 
-
     // Ввод телефона
-
     public void enterPhone(String phone) {
 
         By phoneInput = By.cssSelector(
@@ -193,9 +193,7 @@ public class MtsPaymentPage {
         System.out.println("Номер телефона введен: " + phone);
     }
 
-
     // Ввод суммы
-
     public void enterAmount(String amount) {
 
         By amountInput = By.cssSelector(
@@ -221,9 +219,7 @@ public class MtsPaymentPage {
         System.out.println("Сумма введена: " + amount);
     }
 
-
     // Нажатие кнопки банковской карты
-
     public void clickBankCardButton() {
 
         By button = By.xpath(
@@ -234,18 +230,18 @@ public class MtsPaymentPage {
                 ExpectedConditions.elementToBeClickable(button)
         ).click();
 
-        System.out.println(
-                "Нажата кнопка оплаты банковской картой"
-        );
+        System.out.println("Нажата кнопка оплаты банковской картой.");
 
         wait.until(
-                ExpectedConditions.presenceOfElementLocated(paymentFrame)
+                ExpectedConditions.visibilityOfElementLocated(paymentFrame)
         );
+
+        System.out.println("Платёжная панель открылась.");
+
+        pause(5);
     }
 
-
     // Вывод информации об iframe
-
     public void printFrames() {
 
         driver.switchTo().defaultContent();
@@ -253,37 +249,21 @@ public class MtsPaymentPage {
         List<WebElement> frames =
                 driver.findElements(By.tagName("iframe"));
 
-        System.out.println(
-                "Количество iframe: " + frames.size()
-        );
+        System.out.println("Количество iframe: " + frames.size());
 
         for (int i = 0; i < frames.size(); i++) {
 
             WebElement frame = frames.get(i);
 
             System.out.println("FRAME № " + i);
-
-            System.out.println(
-                    "ID: " + frame.getAttribute("id")
-            );
-
-            System.out.println(
-                    "TITLE: " + frame.getAttribute("title")
-            );
-
-            System.out.println(
-                    "NAME: " + frame.getAttribute("name")
-            );
-
-            System.out.println(
-                    "SRC: " + frame.getAttribute("src")
-            );
+            System.out.println("ID: " + frame.getAttribute("id"));
+            System.out.println("TITLE: " + frame.getAttribute("title"));
+            System.out.println("NAME: " + frame.getAttribute("name"));
+            System.out.println("SRC: " + frame.getAttribute("src"));
         }
     }
 
-
     // Переключение в iframe
-
     private void switchToPaymentFrame() {
 
         driver.switchTo().defaultContent();
@@ -294,14 +274,10 @@ public class MtsPaymentPage {
                 )
         );
 
-        System.out.println(
-                "Переключились в iframe bePaid"
-        );
+        System.out.println("Переключились в iframe bePaid.");
     }
 
-
     // Диагностика содержимого iframe
-
     public void printPaymentFrameContent() {
 
         switchToPaymentFrame();
@@ -312,25 +288,16 @@ public class MtsPaymentPage {
                     By.tagName("body")
             );
 
-            System.out.println(
-                    "\n===== СОДЕРЖИМОЕ BEPAID ====="
-            );
-
+            System.out.println("\n===== СОДЕРЖИМОЕ BEPAID =====");
             System.out.println(body.getText());
-
-            System.out.println(
-                    "=============================\n"
-            );
+            System.out.println("=============================\n");
 
         } finally {
-
             driver.switchTo().defaultContent();
         }
     }
 
-
     // Получение суммы оплаты
-
     public String getPaymentAmount() {
 
         switchToPaymentFrame();
@@ -347,21 +314,16 @@ public class MtsPaymentPage {
 
             String result = element.getText().trim();
 
-            System.out.println(
-                    "Сумма из платёжной формы: " + result
-            );
+            System.out.println("Сумма из платёжной формы: " + result);
 
             return result;
 
         } finally {
-
             driver.switchTo().defaultContent();
         }
     }
 
-
     // Получение информации об оплате
-
     public String getPaymentInformation() {
 
         switchToPaymentFrame();
@@ -373,22 +335,17 @@ public class MtsPaymentPage {
             );
 
             WebElement element = wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(
-                            information
-                    )
+                    ExpectedConditions.visibilityOfElementLocated(information)
             );
 
             return element.getText().trim();
 
         } finally {
-
             driver.switchTo().defaultContent();
         }
     }
 
-
     // Проверка полей банковской карты
-
     public List<String> getCardPlaceholders() {
 
         switchToPaymentFrame();
@@ -405,9 +362,7 @@ public class MtsPaymentPage {
             );
 
             wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(
-                            cardInputs
-                    )
+                    ExpectedConditions.visibilityOfElementLocated(cardInputs)
             );
 
             List<WebElement> inputs =
@@ -419,8 +374,7 @@ public class MtsPaymentPage {
                     continue;
                 }
 
-                String name =
-                        input.getAttribute("formcontrolname");
+                String name = input.getAttribute("formcontrolname");
 
                 if ("creditCard".equals(name)) {
                     result.add("Номер карты");
@@ -439,14 +393,11 @@ public class MtsPaymentPage {
             return result;
 
         } finally {
-
             driver.switchTo().defaultContent();
         }
     }
 
-
     // Проверка логотипов платёжных систем
-
     public List<String> getPaymentLogos() {
 
         switchToPaymentFrame();
@@ -466,17 +417,13 @@ public class MtsPaymentPage {
                     continue;
                 }
 
-                String description =
-                        image.getAttribute("alt");
+                String description = image.getAttribute("alt");
+                String source = image.getAttribute("src");
 
-                String source =
-                        image.getAttribute("src");
-
-                String info = (
-                        (description == null ? "" : description) +
+                String info =
+                        ((description == null ? "" : description) +
                                 " " +
-                                (source == null ? "" : source)
-                ).toLowerCase();
+                                (source == null ? "" : source)).toLowerCase();
 
                 if (info.contains("visa") ||
                         info.contains("mastercard") ||
@@ -489,9 +436,53 @@ public class MtsPaymentPage {
             return logos;
 
         } finally {
-
             driver.switchTo().defaultContent();
         }
     }
 
+    // Закрытие платёжной панели
+    public void closePaymentFrame() {
+
+        switchToPaymentFrame();
+
+        try {
+
+            WebElement closeButton = wait.until(
+                    ExpectedConditions.elementToBeClickable(
+                            By.cssSelector(".header__close-button")
+                    )
+            );
+
+            closeButton.click();
+
+            System.out.println("Кнопка закрытия платёжной панели нажата.");
+
+        } finally {
+            driver.switchTo().defaultContent();
+        }
+
+        wait.until(
+                ExpectedConditions.invisibilityOfElementLocated(paymentFrame)
+        );
+
+        System.out.println("Платёжная панель закрыта.");
+
+        pause(3);
+    }
+
+    // Нажатие кнопки КРОК
+    public void clickKrokButton() {
+
+        WebElement krokButton = wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.xpath("//img[@alt='КРОК']/..")
+                )
+        );
+
+        krokButton.click();
+
+        System.out.println("Кнопка 'КРОК' нажата.");
+
+        pause(7);
+    }
 }
